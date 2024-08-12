@@ -1,8 +1,8 @@
 {
   "name": "nestjs-board-app",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "My first nestJs project",
+  "author": "YJin",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
