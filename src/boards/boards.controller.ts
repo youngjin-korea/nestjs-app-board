@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   UsePipes,
@@ -25,28 +26,32 @@ export class BoardsController {
   //2) 생성자 매개변수에 접근제어자를 설정해주면 자동으로 필드변수 생성 및 의존성주입됨
   constructor(private boardsService: BoardsService) {}
   //   // host/boards 경로로 Get요청시 Read -> 모든 게시물 읽어오기
-  //   @Get('/')
-  //   getAllBoards(): Board[] {
-  //     return this.boardsService.getAllBoards();
-  //   }
-  //   @UsePipes(ValidationPipe) // createBoardDto에 멤버변수에 설정된 validation들이 유효성체크됨
-  //   @Post('/')
-  //   createBoard(@Body() createBoardDto: CreateBoardDto): Board {
-  //     return this.boardsService.createBoard(createBoardDto);
-  //   }
+  @Get('/')
+  getAllBoards(): Promise<Board[]> {
+    return this.boardsService.getAllBoards();
+  }
+
+  @UsePipes(ValidationPipe) // createBoardDto에 멤버변수에 설정된 validation들이 유효성체크됨
+  @Post('/')
+  createBoard(@Body() createBoardDto: CreateBoardDto): Promise<Board> {
+    return this.boardsService.createBoard(createBoardDto);
+  }
+
   @Get('/:id')
-  getBoardById(@Param('id') id: number): Promise<Board> {
+  getBoardById(@Param('id', ParseIntPipe) id: number): Promise<Board> {
     return this.boardsService.getBoardById(id);
   }
-  //   @Delete('/:id')
-  //   deleteBoard(@Param('id') id: string): void {
-  //     this.boardsService.deleteBoard(id);
-  //   }
-  //   @Patch('/:id/status')
-  //   updateBoardsStatus(
-  //     @Param('id') id: string,
-  //     @Body('status', BoardStatusValidationPipe) status: BoardStatus,
-  //   ): Board {
-  //     return this.boardsService.updateBoardStatus(id, status);
-  //   }
+
+  @Delete('/:id')
+  deleteBoard(@Param('id', ParseIntPipe) id: number): void {
+    this.boardsService.deleteBoard(id);
+  }
+
+  @Patch('/:id/status')
+  updateBoardsStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('status', BoardStatusValidationPipe) status: BoardStatus,
+  ): Promise<Board> {
+    return this.boardsService.updateBoardStatus(id, status);
+  }
 }
